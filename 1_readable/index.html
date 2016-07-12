@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+
+  <head>
+    <script type="text/javascript" src="jrv.js"></script>
+    <style type="text/css">
+      pre { margin: 0.5em; padding: 0.5em; background-color: #ddd; }
+      tt  { background-color: #ddd; }
+    </style>
+  </head>
+
+  <body>
+
+    <p>
+      Now please open your browser's developer's tools (usually <tt>f12</tt>, <tt>cmd-opt-i</tt>, or <tt>ctrl-shift-i</tt>, varying by browser and OS,) then switch to the console.
+    </p>
+
+    <p>
+      By example, to get started, you might copy and paste
+    </p>
+
+    <pre>
+var A = 5,
+    B = 6,
+    X = new JRV( () => A+B );
+
+
+console.log( X.v );
+
+A = 15;
+
+console.log( X.v );</pre>
+
+    <p>
+      That should, successively, print <tt>11</tt> and <tt>21</tt>.
+    </p>
+
+  </body>
+
+</html>
