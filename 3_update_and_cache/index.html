@@ -18,7 +18,7 @@
 
     <h1>Step 3 "Update and Cache"</h1>
 
-    <p><a href="../2_mutable_jrv/index.html">2: Mutable JRV (prev)</a> or <a href="../4_dirty_and_lazy/index.html">4: Dirty and Lazy (next)</a></p>
+    <p><a href="../2_mutable_jrv/index.html">2: Mutable JRV (prev)</a> or <a href="../4_values_have_handlers/index.html">4: Values have Handlers (next)</a></p>
 
     <p>This is a demonstration of step three "not redoing a zillion steps every time" Reactive,
     from <a href="https://github.com/StoneCypher/UnderstandingReactiveProgramming/tree/master">Understanding
@@ -60,6 +60,12 @@ class JRV {
         this.callbacks = this.callbacks.concat(cb);
     }
 
+    needs(Dep) {
+        if (Array.isArray(Dep)) { Dep.map(d => d.should_notify(this.make_notifier())); }
+        else                    { Dep.should_notify(this.make_notifier()); }
+        return this;
+    }
+
     make_notifier() {
         return (() => this.update());
     }
@@ -82,7 +88,7 @@ class JRV {
 }
 </code></pre>
 
-    <p><a href="../2_mutable_jrv/index.html">2: Mutable JRV (prev)</a> or <a href="../4_dirty_and_lazy/index.html">4: Dirty and Lazy (next)</a></p>
+    <p><a href="../2_mutable_jrv/index.html">2: Mutable JRV (prev)</a> or <a href="../4_values_have_handlers/index.html">4: Values have Handlers (next)</a></p>
 
   </body>
 

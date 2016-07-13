@@ -1,9 +1,10 @@
 
 class JRV { // reactive node
 
-    constructor(comp) {
-        this.comp      = comp;
-        this.callbacks = [];
+    constructor(comp = (() => true), onchange = (() => true)) {
+        this.comp           = comp;
+        this.change_handler = onchange;
+        this.callbacks      = [];
         this.update();
     }
 
@@ -21,6 +22,11 @@ class JRV { // reactive node
         return (() => this.update());
     }
 
+    onchange(newOnChange) {
+        this.change_handler = newOnChange;
+        return this;
+    }
+
     set v(newComp) {
         this.comp = newComp;
         this.update();
@@ -32,8 +38,18 @@ class JRV { // reactive node
     }
 
     update() {
-        var isFunc        = (typeof this.comp === 'function');
-        return this.value = (isFunc? this.comp() : this.comp);
+
+        var isFunc   = (typeof this.comp === 'function'),
+            oldValue = this.value;
+
+        this.value = (isFunc? this.comp() : this.comp);
+
+        if (this.value !== oldValue) {
+            this.change_handler(this.value, oldValue);
+        }
+
+        return this.value;
+
     }
 
 }

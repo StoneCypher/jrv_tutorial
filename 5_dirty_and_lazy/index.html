@@ -14,11 +14,17 @@
 
   <body>
 
-    <h1>Step 4 "Values have Handlers"</h1>
+- now has to `should_notify` or `needs`
+- needing to check dirty with a handler is a twist ending
+- show how to show guts of JRV object in debugger, w/ screenshot
+  -- use to show dirty in action
+- consider converting everything to return-and-call notation (even initial assignment?)
 
-    <p><a href="../3_update_and_cache/index.html">3: Update and Cache (prev)</a> or <a href="../5_dirty_and_lazy/index.html">5: Dirty and Lazy (next)</a></p>
+    <h1>Step 5 "Dirty and Lazy"</h1>
 
-    <p>This is a demonstration of step four "what do you mean i can have a convenient api" Reactive,
+    <p><a href="../4_values_have_handlers/index.html">4: Values have Handlers (prev)</a> or <a href="../6_options/index.html">6: Options (next)</a></p>
+
+    <p>This is a demonstration of step five "not prospectively doing work we can ignore" Reactive,
     from <a href="https://github.com/StoneCypher/UnderstandingReactiveProgramming/tree/master">Understanding
     Reactive Programming</a>.
 
@@ -30,12 +36,22 @@ var A = new JRV(0),
 
     X = new JRV( () => A.v + B.v )
               .needs([A,B])
-              .onchange( NewData => console.log(NewData) );
+              .onchange( NewData => console.log('New data: ' + NewData) );
 
 A.v = 10;
 A.v = 20;
 A.v = 30;
 </code></pre>
+
+    <p>Then, later,</p>
+
+    <pre><code class="javascript">
+A.v = 10;
+A.v = 20;
+</code></pre>
+
+    <p>Notice that the change handler diligently handles every state in order on the way, even though dirty flagging is maintained for unhandled objects.</p>
+
 
     <h2>Challenge</h2>
 
@@ -47,13 +63,20 @@ A.v = 30;
     The current code:
 
     <pre><code class="javascript">
-class JRV { // reactive node
+class JRV {
 
     constructor(comp = (() => true), onchange = (() => true)) {
+        this.dirty          = true;
         this.comp           = comp;
         this.change_handler = onchange;
         this.callbacks      = [];
         this.update();
+    }
+
+    flag_dirty() {
+        this.dirty = true;
+        if (this.change_handler) { this.update(); }
+        return this;
     }
 
     should_notify(cb) {
@@ -67,7 +90,7 @@ class JRV { // reactive node
     }
 
     make_notifier() {
-        return (() => this.update());
+        return (() => this.flag_dirty());
     }
 
     onchange(newOnChange) {
@@ -82,13 +105,18 @@ class JRV { // reactive node
     }
 
     get v() {
+        if (this.dirty) { this.update(); }
         return this.value;
     }
 
     update() {
 
         var isFunc   = (typeof this.comp === 'function'),
-            oldValue = this.value;
+            oldValue = {};
+
+        Object.assign(oldValue, this.value);
+
+        this.dirty = false;
 
         this.value = (isFunc? this.comp() : this.comp);
 
@@ -103,7 +131,7 @@ class JRV { // reactive node
 }
 </code></pre>
 
-    <p><a href="../3_update_and_cache/index.html">3: Update and Cache (prev)</a> or <a href="../5_dirty_and_lazy/index.html">5: Dirty and Lazy (next)</a></p>
+    <p><a href="../4_values_have_handlers/index.html">4: Values have Handlers (prev)</a> or <a href="../6_options/index.html">6: Options (next)</a></p>
 
   </body>
 
