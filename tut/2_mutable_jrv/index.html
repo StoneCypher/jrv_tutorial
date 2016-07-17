@@ -22,12 +22,29 @@
     <a href="https://github.com/StoneCypher/UnderstandingReactiveProgramming/tree/master">Understanding
     Reactive Programming</a>.
 
-    <p>Since</p>
-
     <h2>Usage instructions</h2>
 
+    <p>Since what we implemented was the ability to change a `JRV`, the usage
+    instructions are the same, with a change at the end to show that changes
+    work.</p>
+
     <pre><code class="javascript">
+var A = new JRV(0),
+    B = new JRV(5),
+    X = new JRV( () => A.v + B.v );
+
+console.log( X.v );
+
+A.v = 10; console.log( X.v );
+A.v = 20; console.log( X.v );
+A.v = 30; console.log( X.v );
+
+X.v = () => (A.v*2) + (B.v*2);
+console.log( X.v );
 </code></pre>
+
+    <p>This should log, in order, <tt>5</tt>, <tt>15</tt>, <tt>25</tt>,
+    <tt>35</tt>, and <tt>70</tt>.</p>
 
     <h2>Challenge</h2>
 
@@ -36,7 +53,7 @@
 
     <h2>Current implementation</h2>
 
-    The current code:
+    <p>The current code:</p>
 
     <pre><code class="javascript">
 class JRV {
