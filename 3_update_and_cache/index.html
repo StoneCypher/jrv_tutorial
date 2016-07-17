@@ -22,21 +22,35 @@
 
     <p>This is a demonstration of step three "not redoing a zillion steps every time" Reactive,
     from <a href="https://github.com/StoneCypher/UnderstandingReactiveProgramming/tree/master">Understanding
-    Reactive Programming</a>.
+    Reactive Programming</a>.</p>
 
     <h2>Usage instructions</h2>
+
+    <p>So this is a pretty big change.</p>
+
+    <p>We've set up that <tt>JRV</tt>s can only
+    be actively notified by other <tt>JRV</tt>s now, <em>and</em> we've also set
+    up that they need to be told that they're listening to each other, either
+    with the <tt>.should_notify</tt> hook, or more conveniently, with the
+    <tt>.needs</tt> statement.</p>
 
     <pre><code class="javascript">
 var A = new JRV(0),
     B = new JRV(5),
-    X = new JRV( () => A.v + B.v );
+    X = new JRV( () => A.v + B.v ).needs([A,B]);
 
 console.log( X.v );
 
 A.v = 10; console.log( X.v );
 A.v = 20; console.log( X.v );
 A.v = 30; console.log( X.v );
+
+X.v = () => (A.v*2) + (B.v*2);
+console.log( X.v );
 </code></pre></code></pre>
+
+    This should log, in order, <tt>5</tt>, <tt>15</tt>, <tt>25</tt>,
+    <tt>35</tt>, and <tt>70</tt>, just like before.
 
     <h2>Challenge</h2>
 

@@ -24,18 +24,36 @@
 
     <h2>Usage instructions</h2>
 
-    <pre><code class="javascript">
-var A = new JRV(0),
-    B = new JRV(5),
+    <p>We've taught <tt>JRV</tt>s to do things when they change,
+    with their <tt>.onchange</tt> handlers, which means that our old example code
+    no longer needs to be covered in log statements (which is a huge
+    improvement.)</p>
 
-    X = new JRV( () => A.v + B.v )
-              .needs([A,B])
-              .onchange( NewData => console.log(NewData) );
+    <pre><code class="javascript">
+var logger = NewData => console.log(NewData),
+
+    A      = new JRV(0),
+    B      = new JRV(5),
+
+    X      = new JRV( () => A.v + B.v )
+                   .needs([A,B])
+                   .onchange(logger);
+
+console.log( X.v );
 
 A.v = 10;
 A.v = 20;
 A.v = 30;
+
+X.v = () => (A.v*2) + (B.v*2);
 </code></pre>
+
+    <p>This should <em>still</em> log, in order, <tt>5</tt>, <tt>15</tt>,
+    <tt>25</tt>, <tt>35</tt>, and <tt>70</tt>, even though we ditched all
+    the log statements, and stopped paying attention to where things were
+    happening.</p>
+
+    <p>The value of <tt>Reactive</tt> is starting to deliver.</p>
 
     <h2>Challenge</h2>
 
